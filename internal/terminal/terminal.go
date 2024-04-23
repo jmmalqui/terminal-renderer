@@ -7,6 +7,7 @@ import (
 	"runtime"
 
 	"github.com/jmmalqui/terminal-renderer/internal/buffer"
+	"github.com/jmmalqui/terminal-renderer/internal/color"
 	"github.com/jmmalqui/terminal-renderer/internal/vec"
 	"golang.org/x/term"
 )
@@ -30,8 +31,8 @@ func (t *Terminal) Flip() {
 		}
 	}
 	t.Clear()
+	fmt.Println(stringBuffer)
 
-	fmt.Print(stringBuffer)
 }
 
 func MakeTerminal() Terminal {
@@ -45,9 +46,9 @@ func MakeTerminal() Terminal {
 	} else {
 		panic("Something went wrong when getting the terminal size")
 	}
-	colorBuffer := make([]buffer.Color, width*height)
+	colorBuffer := make([]color.Color, width*height)
 	for i := 0; i < width*height; i++ {
-		colorBuffer[i] = buffer.Color{R: 0, G: 0, B: 0}
+		colorBuffer[i] = color.Color{R: 0, G: 0, B: 0}
 	}
 	var pBuffer buffer.PixelBuffer
 	{
@@ -81,11 +82,16 @@ func (t *Terminal) Clear() {
 	}
 }
 
-func (t *Terminal) Fill(color vec.Vec3) {
+func (t *Terminal) DrawPixel(x int, y int, c color.Color) {
+	t.WorkBuffer.Data[(y*t.Size.X)+x] = c
+}
+
+func (t *Terminal) Fill(c vec.Vec3) {
 	for idx := range t.WorkBuffer.Data {
-		var trueColor buffer.Color
+		var trueColor color.Color
 		{
-			trueColor = buffer.Vec3ToColor(color)
+			trueColor = color.Vec3ToColor(c)
+
 		}
 
 		t.WorkBuffer.Data[idx] = trueColor

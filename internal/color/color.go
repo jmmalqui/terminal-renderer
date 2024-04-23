@@ -1,4 +1,4 @@
-package buffer
+package color
 
 import (
 	"fmt"
@@ -12,8 +12,34 @@ type Color struct {
 	B int
 }
 
+func (c *Color) Diff(t Color) Color {
+	var diff Color
+	{
+		diff.R = c.R - t.R
+		diff.G = c.G - t.G
+		diff.B = c.B - t.B
+	}
+	return diff
+}
+func (c *Color) Add(t Color) Color {
+	var diff Color
+	{
+		diff.R = c.R + t.R
+		diff.G = c.G + t.G
+		diff.B = c.B + t.B
+	}
+	return diff
+}
+func (c *Color) Mult(t float64) Color {
+	var diff Color
+	{
+		diff.R = int(float64(c.R) * t)
+		diff.G = int(float64(c.G) * t)
+		diff.B = int(float64(c.B) * t)
+	}
+	return diff
+}
 func (c *Color) ColorToString() string {
-	// fmt.Println(c)
 	return fmt.Sprintf("\033[48;2;%v;%v;%vm ", c.R, c.G, c.B)
 }
 
